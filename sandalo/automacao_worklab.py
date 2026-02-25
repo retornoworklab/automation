@@ -7,12 +7,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+import os
 
-# Configurações
 URL_LOGIN = "https://app2.worklabweb.com.br/index.php"
-ID_LAB = "3769"
-USUARIO = "Retorno"
-SENHA = "WrkLb@AutoRet0rno#2026!"
+ID_LAB = os.environ.get('ID_LAB', '3769')
+USUARIO = os.environ.get('USUARIO', 'Retorno')
+SENHA = os.environ.get('SENHA', 'WrkLb@AutoRet0rno#2026!')
+# Configurações
+# ID_LAB = "3769"
+# USUARIO = "Retorno"
+# SENHA = "WrkLb@AutoRet0rno#2026!"
 
 def criar_driver():
     chrome_options = Options()
