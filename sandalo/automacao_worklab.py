@@ -1,22 +1,18 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import time
-from datetime import datetime, timedelta
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+import time
+from datetime import datetime, timedelta
 import os
+import sys
 
 URL_LOGIN = "https://app2.worklabweb.com.br/index.php"
 ID_LAB = os.environ.get('ID_LAB', '3769')
 USUARIO = os.environ.get('USUARIO', 'Retorno')
 SENHA = os.environ.get('SENHA', 'WrkLb@AutoRet0rno#2026!')
-# Configurações
-# ID_LAB = "3769"
-# USUARIO = "Retorno"
-# SENHA = "WrkLb@AutoRet0rno#2026!"
 
 def criar_driver():
     chrome_options = Options()
@@ -25,6 +21,9 @@ def criar_driver():
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--window-size=1920,1080')
+    # Desabilitar notificações e infobars
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    chrome_options.add_experimental_option('useAutomationExtension', False)
     
     driver = webdriver.Chrome(options=chrome_options)
     return driver
@@ -44,11 +43,8 @@ def esperar_clicavel(driver, by, valor, tempo=10):
     )
 
 def main():
-    driver = webdriver.Chrome()
-    driver.maximize_window()
-
+    driver = criar_driver()
     try:
-        # Login
         print("Acessando página de login...")
         driver.get(URL_LOGIN)
 
@@ -79,24 +75,20 @@ def main():
         botao_login = esperar_clicavel(driver, By.XPATH, "//*[@id='logar']")
         botao_login.click()
 
-        # --- Tratamento do modal de aviso de senha ---
+        # Tratamento do modal de aviso de senha
         try:
-            # Aguarda até 5 segundos pelo botão OK (várias possibilidades)
             modal_ok = WebDriverWait(driver, 5).until(
                 EC.element_to_be_clickable((By.XPATH, "//button[text()='OK'] | //input[@value='OK'] | //*[text()='OK']"))
             )
             modal_ok.click()
             print("Modal de aviso de senha fechado.")
-            # Pequena pausa para o modal sumir
             time.sleep(1)
         except TimeoutException:
             print("Nenhum modal de aviso encontrado, prosseguindo...")
 
-        # Aguardar carregamento da página principal (menu Integrações)
         print("Aguardando menu Integrações...")
         esperar_elemento(driver, By.XPATH, "//*[@id='topo-megamenu-integracao']/div[1]/img")
 
-        # Navegação
         print("Abrindo menu Integrações...")
         menu_integracoes = esperar_clicavel(driver, By.XPATH, "//*[@id='topo-megamenu-integracao']/div[1]/img")
         menu_integracoes.click()
@@ -105,7 +97,6 @@ def main():
         submenu_retorno = esperar_clicavel(driver, By.XPATH, "//*[@id='megamenu-integracao']/ul[1]/li[5]/ul/li[2]/a")
         submenu_retorno.click()
 
-        # Preencher data
         data_inicio = calcular_data_uma_semana_atras()
         print(f"Preenchendo data de início: {data_inicio}")
         campo_data = esperar_elemento(driver, By.XPATH, "//*[@id='dtCadastroInicio']")
@@ -113,7 +104,6 @@ def main():
         campo_data.clear()
         campo_data.send_keys(data_inicio)
 
-        # Marcar checkboxes
         print("Marcando conferido...")
         checkbox_conferido = esperar_clicavel(driver, By.XPATH, "//*[@id='conferido']")
         if not checkbox_conferido.is_selected():
@@ -124,19 +114,20 @@ def main():
         if not checkbox_visto.is_selected():
             checkbox_visto.click()
 
-        # Clicar Enviar
         print("Enviando formulário...")
         botao_enviar = esperar_clicavel(driver, By.XPATH, "//*[@id='formWsRetornoIntegracaoCadastro']/table/tbody/tr[2]/td[5]/input")
         botao_enviar.click()
 
-        time.sleep(620)
+        # Aguarda um pouco para o envio ser processado (opcional)
+        time.sleep(5)
         print("Automação concluída com sucesso!")
 
     except Exception as e:
         print(f"Erro durante a automação: {e}")
+        sys.exit(1)
     finally:
-        time.sleep(3)
         driver.quit()
+        sys.exit(0)
 
-def main():
-    driver = criar_driver()
+if __name__ == "__main__":
+    main()
