@@ -12,6 +12,17 @@ ID_LAB = "3769"
 USUARIO = "Retorno"
 SENHA = "WrkLb@AutoRet0rno#2026!"
 
+def criar_driver():
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--window-size=1920,1080')
+    
+    driver = webdriver.Chrome(options=chrome_options)
+    return driver
+
 def calcular_data_uma_semana_atras():
     data = datetime.now() - timedelta(days=7)
     return data.strftime("%d/%m/%Y")
@@ -121,5 +132,5 @@ def main():
         time.sleep(3)
         driver.quit()
 
-if __name__ == "__main__":
-    main()
+def main():
+    driver = criar_driver()
