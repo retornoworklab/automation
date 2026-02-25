@@ -2,16 +2,15 @@ name: Executar Automação Worklab
 
 on:
   schedule:
-    - cron: '0 */2 * * *'   # A cada 2 horas, no minuto 0
-  workflow_dispatch:         # Permite execução manual
+    - cron: '0 */2 * * *'   # A cada 2 horas
+  workflow_dispatch:
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -22,13 +21,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser chromium-chromedriver xvfb
-          # Cria link simbólico para o chromedriver (opcional, mas ajuda)
           sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/local/bin/chromedriver
 
       - name: Instalar dependências Python
         run: pip install selenium
 
-      - name: Executar script com Xvfb
+      - name: Executar script
         run: xvfb-run -a python sandalo/automacao_worklab.py
         env:
           ID_LAB: ${{ secrets.ID_LAB }}
