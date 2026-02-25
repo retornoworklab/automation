@@ -10,7 +10,7 @@ from selenium.common.exceptions import TimeoutException
 URL_LOGIN = "https://app2.worklabweb.com.br/index.php"
 ID_LAB = "3769"
 USUARIO = "Retorno"
-SENHA = "123456"
+SENHA = "WrkLb@AutoRet0rno#2026!"
 
 def calcular_data_uma_semana_atras():
     data = datetime.now() - timedelta(days=7)
