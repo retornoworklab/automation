@@ -119,7 +119,7 @@ def main():
         botao_enviar.click()
 
         # Aguarda um pouco para o envio ser processado (opcional)
-        time.sleep(5)
+        time.sleep(2400)
         print("Automação concluída com sucesso!")
 
     except Exception as e:
