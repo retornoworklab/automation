@@ -21,9 +21,9 @@ def criar_driver():
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--window-size=1920,1080')
-    # Desabilitar notificações e infobars
-    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    chrome_options.add_experimental_option('useAutomationExtension', False)
+    
+    # Força o caminho do executável do Chromium
+    chrome_options.binary_location = "/usr/bin/chromium-browser"
     
     driver = webdriver.Chrome(options=chrome_options)
     return driver
